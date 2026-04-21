@@ -2,21 +2,10 @@ package main
 
 import (
 	"fmt"
-	"main/internal/signal_logic"
-	bybit "main/internal/signal_logic/ByBit"
-	mexc "main/internal/signal_logic/MEXC"
 )
 
 func main() {
-	Mexc := mexc.CreateMEXCModel()
-	Bybit := bybit.CreateBybitModel()
-	c, _ := Bybit.GetOHLC("BTCUSDT", "1")
-	fmt.Println(c)
-	engine := signal_logic.CreateOHLCServces(Mexc)
-	engine = signal_logic.CreateOHLCServces(Bybit)
-	b, err := engine.GetCandle("BTCUSDT", "1")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(b)
+	a := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
+	b := a[len(a)-14:]
+	fmt.Println(b, len(b))
 }
