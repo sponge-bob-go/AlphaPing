@@ -2,21 +2,34 @@ package main
 
 import (
 	"fmt"
-	"main/internal/signal_logic"
-	bybit "main/internal/signal_logic/ByBit"
-	mexc "main/internal/signal_logic/MEXC"
+	internal "main/internal"
+	basecryptodata "main/internal/base_crypto_data"
+	"sync"
 )
 
 func main() {
-	Mexc := mexc.CreateMEXCModel()
-	Bybit := bybit.CreateBybitModel()
-	c, _ := Bybit.GetOHLC("BTCUSDT", "1")
-	fmt.Println(c)
-	engine := signal_logic.CreateOHLCServces(Mexc)
-	engine = signal_logic.CreateOHLCServces(Bybit)
-	b, err := engine.GetCandle("BTCUSDT", "1")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(b)
+	coinMap := internal.MakeCoinMap()
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+
+		if err := basecryptodata.StartUpdateCoinsPrice(coinMap); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+
+		if err := basecryptodata.StartUpdateCoinsInfo(coinMap); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	wg.Wait()
 }
