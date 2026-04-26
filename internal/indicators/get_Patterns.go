@@ -1,4 +1,4 @@
-package logic
+package indicators
 
 func GetPatterns(candles [][]string) map[string]bool {
 	regsCandles := RegCandles(candles)

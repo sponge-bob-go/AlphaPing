@@ -1,4 +1,4 @@
-package logic
+package indicators
 
 func GetTrend15(ema50 float64, ema200 float64) string {
 	if ema50 > ema200 {

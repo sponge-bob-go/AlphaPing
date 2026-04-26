@@ -1,4 +1,4 @@
-package logic
+package indicators
 
 import (
 	"strconv"

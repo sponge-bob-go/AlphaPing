@@ -3,45 +3,39 @@ package main
 import (
 	"context"
 	"fmt"
+	coreapi "main/cmd/core_api"
+	"main/cmd/core_api/handlers"
 	"main/database"
 	internal "main/internal"
 	basecryptodata "main/internal/base_crypto_data"
-	"sync"
+	"net/http"
 )
 
 func main() {
 	coinMap := internal.MakeCoinMap()
-	var wg sync.WaitGroup
+	ctx := context.Background()
+	conn, err := database.ConnetcToBD(ctx)
+	fmt.Println(conn)
+	if err != nil {
+		panic(err)
+	}
 
-	wg.Add(1)
+	mux := coreapi.MakeMux()
+
+	mux.HandleFunc("/core-api/coins_base_data", handlers.Handler_default_data(coinMap))
 
 	go func() {
-		defer wg.Done()
 
 		if err := basecryptodata.StartUpdateCoinsPrice(coinMap); err != nil {
 			fmt.Println(err)
 		}
 	}()
 
-	wg.Add(1)
-
 	go func() {
-		defer wg.Done()
 
 		if err := basecryptodata.StartUpdateCoinsInfo(coinMap); err != nil {
 			fmt.Println(err)
 		}
 	}()
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		ctx := context.Background()
-		conn, err := database.ConnetcToBD(ctx)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(conn)
-	}()
-
-	wg.Wait()
+	http.ListenAndServe(":8080", mux)
 }
