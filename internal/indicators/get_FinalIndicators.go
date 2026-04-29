@@ -1,26 +1,28 @@
 package indicators
 
+import "main/internal/signal_logic"
+
 type Indicators struct {
-	SMA     float64
-	EMA     float64
-	Trend15 string
-	Trend60 string
-	RSI     float64
+	SMA     float64 `json:"SMA"`
+	EMA     float64 `json:"EMA"`
+	Trend15 string  `json:"Trend15"`
+	Trend60 string  `json:"Trend60"`
+	RSI     float64 `json:"RSI"`
 	MACD    struct {
-		MACDLine   float64
-		SignalLine float64
-		Histogram  float64
+		MACDLine   float64 `json:"MACDLine"`
+		SignalLine float64 `json:"SignalLine"`
+		Histogram  float64 `json:"Histogram"`
 	}
-	ATR         float64
-	ATRPercent  float64
-	ADX         float64
-	Volume      string
-	Supports    []float64
-	Resistances []float64
-	Patterns    map[string]bool
+	ATR         float64         `json:"ATR"`
+	ATRPercent  float64         `json:"ATRPercent"`
+	ADX         float64         `json:"ADX"`
+	Volume      string          `json:"Volume"`
+	Supports    []float64       `json:"Supports"`
+	Resistances []float64       `json:"Resistances"`
+	Patterns    map[string]bool `json:"Patterns"`
 }
 
-func GetFinalIndicators(candles [][]string) Indicators {
+func GetFinalIndicators(candles []signal_logic.OHLCStruct, candles60 []signal_logic.OHLCStruct) Indicators {
 	result := Indicators{}
 	result.Patterns = make(map[string]bool)
 
@@ -66,8 +68,7 @@ func GetFinalIndicators(candles [][]string) Indicators {
 	}()
 
 	go func() {
-		ohlc := RegCandles(candles)
-		chADX <- GetADX(ohlc, 14)
+		chADX <- GetADX(candles, 14)
 	}()
 
 	go func() {
@@ -86,7 +87,6 @@ func GetFinalIndicators(candles [][]string) Indicators {
 
 	result.SMA = <-chSMA50
 	sma200 := <-chSMA200
-	result.EMA = <-chEMA
 	result.RSI = <-chRSI
 
 	macd := <-chMACD
@@ -102,10 +102,14 @@ func GetFinalIndicators(candles [][]string) Indicators {
 	result.Resistances = <-chResistances
 	result.Patterns = <-chPatterns
 
-	ema50 := result.EMA
-	ema200 := sma200
-	result.Trend15 = GetTrend15(ema50, ema200)
-	result.Trend60 = GetTrend60(ema50, ema200)
+	ema15 := GetEMA(candles, 50)
+	result.EMA = ema15
+	result.Trend15 = GetTrend15(ema15, sma200)
+
+	ema60 := GetEMA(candles60, 200)
+	sma60 := GetSMA(candles60, 50)
+	result.Trend60 = GetTrend15(ema60, sma60)
 
 	return result
+
 }

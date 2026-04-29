@@ -1,10 +1,11 @@
 package indicators
 
 import (
+	"main/internal/signal_logic"
 	"math"
 )
 
-func GetADX(candles []OHLC, period int) float64 {
+func GetADX(candles []signal_logic.OHLCStruct, period int) float64 {
 
 	trs := make([]float64, len(candles))
 	plusDMs := make([]float64, len(candles))

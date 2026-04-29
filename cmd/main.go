@@ -15,6 +15,7 @@ func main() {
 	coinMap := internal.MakeCoinMap()
 	ctx := context.Background()
 	conn, err := database.ConnetcToBD(ctx)
+
 	fmt.Println(conn)
 	if err != nil {
 		panic(err)
@@ -23,6 +24,7 @@ func main() {
 	mux := coreapi.MakeMux()
 
 	mux.HandleFunc("/core-api/coins_base_data", handlers.Handler_default_data(coinMap))
+	mux.HandleFunc("/core-api/get_anlyse", handlers.Handler_analys_coin)
 
 	go func() {
 

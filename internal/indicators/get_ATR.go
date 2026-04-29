@@ -1,25 +1,18 @@
 package indicators
 
 import (
+	"main/internal/signal_logic"
 	"math"
-	"strconv"
 )
 
-func GetATR(candles [][]string, period int) float64 {
+func GetATR(candles []signal_logic.OHLCStruct, period int) float64 {
 
 	lastCandles := candles[len(candles)-period:]
 	var sumTR float64
 
 	for i := range lastCandles {
-		high, err := strconv.ParseFloat(lastCandles[i][2], 64)
-		if err != nil {
-			return 0
-		}
-
-		low, err := strconv.ParseFloat(lastCandles[i][3], 64)
-		if err != nil {
-			return 0
-		}
+		high := lastCandles[i].High
+		low := lastCandles[i].Low
 
 		if i == 0 {
 			tr := high - low
@@ -27,10 +20,7 @@ func GetATR(candles [][]string, period int) float64 {
 			continue
 		}
 
-		prevClose, err := strconv.ParseFloat(lastCandles[i-1][4], 64)
-		if err != nil {
-			return 0
-		}
+		prevClose := lastCandles[i-1].Close
 
 		rangeHL := high - low
 		absHigh := math.Abs(high - prevClose)

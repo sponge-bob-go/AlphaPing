@@ -1,17 +1,11 @@
 package indicators
 
-import (
-	"strconv"
-)
+import "main/internal/signal_logic"
 
-func GetATRPercent(candles [][]string, period int) float64 {
+func GetATRPercent(candles []signal_logic.OHLCStruct, period int) float64 {
 	atr := GetATR(candles, period)
 
-	lastCloseStr := candles[len(candles)-1][4]
-	lastClose, err := strconv.ParseFloat(lastCloseStr, 64)
-	if err != nil {
-		return 0
-	}
+	lastClose := candles[len(candles)-1].Close
 
 	return (atr / lastClose) * 100
 }
