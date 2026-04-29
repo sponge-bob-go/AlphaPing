@@ -1,19 +1,12 @@
 package indicators
 
-import (
-	"strconv"
-)
+import "main/internal/signal_logic"
 
-func GetMACD(candles [][]string) map[string]float64 {
+func GetMACD(candles []signal_logic.OHLCStruct) map[string]float64 {
 
 	var closes []float64
 	for _, c := range candles {
-
-		price, err := strconv.ParseFloat(c[4], 64)
-		if err != nil {
-			return nil
-		}
-		closes = append(closes, price)
+		closes = append(closes, c.Close)
 	}
 
 	ema12 := GetEMA(candles, 12)

@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+type cryptoResp struct {
+}
+
+type cryptoResp struct {
+}
+
 func HandlerDefaultData(cm *internal.CoinMap) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cm.Mu.RLock()

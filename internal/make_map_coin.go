@@ -3,24 +3,24 @@ package internal
 import "sync"
 
 type CoinGeckoData struct {
-	CurrentPrice      float64
-	MarketCap         float64
-	MarketCapRank     int
-	TotalVolume       float64
-	High24h           float64
-	Low24h            float64
-	CirculatingSupply float64
-	TotalSupply       float64
+	CurrentPrice      float64 `json:"CurrentPrice"`
+	MarketCap         float64 `json:"MarketCap"`
+	MarketCapRank     int     `json:"MarketCapRank"`
+	TotalVolume       float64 `json:"TotalVolume"`
+	High24h           float64 `json:"High24h"`
+	Low24h            float64 `json:"Low24h"`
+	CirculatingSupply float64 `json:"CirculatingSupply"`
+	TotalSupply       float64 `json:"TotalSupply"`
 }
 
 type CoinInfo struct {
-	Price    float64
-	CoinData CoinGeckoData
+	Price    float64       `json:"Price"`
+	CoinData CoinGeckoData `json:"CoinData"`
 }
 
 type CoinMap struct {
 	Mu    sync.RWMutex
-	Coins map[string]CoinInfo
+	Coins map[string]CoinInfo `json:"Coins"`
 }
 
 func MakeCoinMap() *CoinMap {

@@ -1,8 +1,8 @@
 package indicators
 
 import (
+	"main/internal/signal_logic"
 	"math"
-	"strconv"
 )
 
 type OHLC struct {
@@ -17,14 +17,16 @@ type OHLC struct {
 	Color       string
 }
 
-func RegCandles(candles [][]string) []OHLC {
+type OHLCStruct signal_logic.OHLCStruct
+
+func RegCandles(candles []signal_logic.OHLCStruct) []OHLC {
 	var res []OHLC
 
 	for _, c := range candles {
-		open_, _ := strconv.ParseFloat(c[1], 64)
-		high, _ := strconv.ParseFloat(c[2], 64)
-		low, _ := strconv.ParseFloat(c[3], 64)
-		close_, _ := strconv.ParseFloat(c[4], 64)
+		open_ := c.Open
+		high := c.High
+		low := c.Low
+		close_ := c.Close
 
 		body := math.Abs(close_ - open_)
 		upperShadow := high - math.Max(open_, close_)
