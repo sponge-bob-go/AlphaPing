@@ -1,5 +1,7 @@
 package indicators
 
+import "main/internal/signal_logic"
+
 type Indicators struct {
 	SMA     float64 `json:"SMA"`
 	EMA     float64 `json:"EMA"`
@@ -20,7 +22,7 @@ type Indicators struct {
 	Patterns    map[string]bool `json:"Patterns"`
 }
 
-func GetFinalIndicators(candles [][]string) Indicators {
+func GetFinalIndicators(candles []signal_logic.OHLCStruct, candles60 []signal_logic.OHLCStruct) Indicators {
 	result := Indicators{}
 	result.Patterns = make(map[string]bool)
 
