@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Handler_default_data(cm *internal.CoinMap) http.HandlerFunc {
+func HandlerDefaultData(cm *internal.CoinMap) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cm.Mu.RLock()
 		defer cm.Mu.RUnlock()

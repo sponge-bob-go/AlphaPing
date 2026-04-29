@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	coreapi "main/cmd/core_api"
 	"main/cmd/core_api/handlers"
-	"main/database"
 	internal "main/internal"
 	basecryptodata "main/internal/base_crypto_data"
 	"net/http"
@@ -13,16 +11,17 @@ import (
 
 func main() {
 	coinMap := internal.MakeCoinMap()
-	ctx := context.Background()
-	conn, err := database.ConnetcToBD(ctx)
-	fmt.Println(conn)
-	if err != nil {
-		panic(err)
-	}
+	//ctx := context.Background()
+	//conn, err := database.ConnetcToBD(ctx)
+	//fmt.Println(conn)
+	//if err != nil {
+	//panic(err)
+	//}
 
 	mux := coreapi.MakeMux()
 
-	mux.HandleFunc("/core-api/coins_base_data", handlers.Handler_default_data(coinMap))
+	mux.HandleFunc("/core-api/coins_base_data", handlers.HandlerDefaultData(coinMap))
+	mux.HandleFunc("/core-api/coins_tech_data", handlers.HandlerTechData)
 
 	go func() {
 
