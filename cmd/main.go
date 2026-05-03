@@ -22,6 +22,7 @@ func main() {
 
 	mux.HandleFunc("/core-api/coins_base_data", handlers.HandlerDefaultData(coinMap))
 	mux.HandleFunc("/core-api/coins_tech_data", handlers.HandlerTechData)
+	mux.HandleFunc("/ml-api/return_indicators", handlers.OHLCHandler)
 
 	go func() {
 

@@ -6,7 +6,6 @@ type Indicators struct {
 	SMA     float64 `json:"SMA"`
 	EMA     float64 `json:"EMA"`
 	Trend15 string  `json:"Trend15"`
-	Trend60 string  `json:"Trend60"`
 	RSI     float64 `json:"RSI"`
 	MACD    struct {
 		MACDLine   float64 `json:"MACDLine"`
@@ -22,7 +21,7 @@ type Indicators struct {
 	Patterns    map[string]bool `json:"Patterns"`
 }
 
-func GetFinalIndicators(candles []signal_logic.OHLCStruct, candles60 []signal_logic.OHLCStruct) Indicators {
+func GetFinalIndicators(candles []signal_logic.OHLCStruct) Indicators {
 	result := Indicators{}
 	result.Patterns = make(map[string]bool)
 
@@ -105,10 +104,6 @@ func GetFinalIndicators(candles []signal_logic.OHLCStruct, candles60 []signal_lo
 	ema15 := GetEMA(candles, 50)
 	result.EMA = ema15
 	result.Trend15 = GetTrend15(ema15, sma200)
-
-	ema60 := GetEMA(candles60, 200)
-	sma60 := GetSMA(candles60, 50)
-	result.Trend60 = GetTrend15(ema60, sma60)
 
 	return result
 

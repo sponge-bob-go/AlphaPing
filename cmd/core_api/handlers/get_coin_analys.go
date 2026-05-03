@@ -27,26 +27,24 @@ func HandlerTechData(w http.ResponseWriter, r *http.Request) {
 	if market == "mexc" {
 		ohlcModel := mexc.CreateMEXCModel()
 		ohlc, err := ohlcModel.GetOHLC(coin_name, interval)
-		ohlc60, _ := ohlcModel.GetOHLC(coin_name, "60m")
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		indicator := indicators.GetFinalIndicators(ohlc, ohlc60)
+		indicator := indicators.GetFinalIndicators(ohlc)
 		json.NewEncoder(w).Encode(indicator)
 	}
 	if market == "bybit" {
 		ohlcModel := bybit.CreateBybitModel()
 		ohlc, err := ohlcModel.GetOHLC(coin_name, interval)
 		fmt.Println(ohlc)
-		ohlc60, _ := ohlcModel.GetOHLC(coin_name, "60")
 		fmt.Println(ohlc)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		indicator := indicators.GetFinalIndicators(ohlc, ohlc60)
+		indicator := indicators.GetFinalIndicators(ohlc)
 		json.NewEncoder(w).Encode(indicator)
 	}
 }
