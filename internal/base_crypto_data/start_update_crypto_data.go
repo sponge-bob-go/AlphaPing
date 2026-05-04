@@ -26,7 +26,7 @@ func StartUpdateCoinsPrice(m *internal.CoinMap) error {
 				return err
 			}
 
-			time.Sleep(3 * time.Second)
+			time.Sleep(2 * time.Second)
 		}
 
 		pp.Print(m.Coins)
@@ -42,6 +42,6 @@ func StartUpdateCoinsInfo(m *internal.CoinMap) error {
 		}
 
 		pp.Print(m.Coins)
-		time.Sleep(4 * time.Minute)
+		time.Sleep(24 * time.Hour)
 	}
 }

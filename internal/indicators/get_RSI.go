@@ -1,23 +1,16 @@
-package logic
+package indicators
 
 import (
+	"main/internal/signal_logic"
 	"math"
-	"strconv"
 )
 
-func GetRSI(candles [][]string) float64 {
+func GetRSI(candles []signal_logic.OHLCStruct) float64 {
 	period := 14
 
 	var closes []float64
 	for _, c := range candles {
-		if len(c) < 5 {
-			return 0
-		}
-		price, err := strconv.ParseFloat(c[4], 64)
-		if err != nil {
-			return 0
-		}
-		closes = append(closes, price)
+		closes = append(closes, c.Close)
 	}
 
 	var gains []float64

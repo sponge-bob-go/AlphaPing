@@ -1,6 +1,8 @@
-package logic
+package indicators
 
-func GetPatterns(candles [][]string) map[string]bool {
+import "main/internal/signal_logic"
+
+func GetPatterns(candles []signal_logic.OHLCStruct) map[string]bool {
 	regsCandles := RegCandles(candles)
 	patternsCandles := make(map[string]bool)
 

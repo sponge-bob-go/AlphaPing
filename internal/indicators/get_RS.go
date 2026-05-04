@@ -1,28 +1,22 @@
-package logic
+package indicators
 
-import (
-	"strconv"
-)
+import "main/internal/signal_logic"
 
-func GetRS(candles [][]string) ([]float64, []float64) {
+func GetRS(candles []signal_logic.OHLCStruct) ([]float64, []float64) {
 
 	var supports []float64
 	var resistances []float64
 
 	for i := 1; i < len(candles)-1; i++ {
 
-		floatHigh, err := strconv.ParseFloat(candles[i][2], 64)
-		if err != nil {
-			return nil, nil
-		}
+		floatHigh := candles[i].High
+		floatLow := candles[i].Low
+		floatPrevHigh := candles[i-1].High
+		floatNextHigh := candles[i+1].High
 
-		floatLow, err := strconv.ParseFloat(candles[i][3], 64)
-		floatPrevHigh, err := strconv.ParseFloat(candles[i-1][2], 64)
-		floatNextHigh, err := strconv.ParseFloat(candles[i+1][2], 64)
+		floatPrevLow := candles[i-1].Low
 
-		floatPrevLow, err := strconv.ParseFloat(candles[i-1][3], 64)
-
-		floatNextLow, err := strconv.ParseFloat(candles[i+1][3], 64)
+		floatNextLow := candles[i+1].Low
 		if floatHigh > floatPrevHigh && floatHigh > floatNextHigh {
 			resistances = append(resistances, floatHigh)
 		}

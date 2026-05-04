@@ -1,28 +1,18 @@
-package logic
+package indicators
 
-import (
-	"strconv"
-)
+import "main/internal/signal_logic"
 
-func GetVolume(candles [][]string, period int) string {
+func GetVolume(candles []signal_logic.OHLCStruct, period int) string {
 	lastCandles := candles[len(candles)-period:]
 	var sum float64
 
 	for _, c := range lastCandles {
-		vol, err := strconv.ParseFloat(c[5], 64)
-		if err != nil {
-			panic(err)
-		}
-		sum += vol
+		sum += c.Volume
 	}
 
 	avg := sum / float64(period)
 
-	lastCandleVolStr := candles[len(candles)-1][5]
-	lastCandleVol, err := strconv.ParseFloat(lastCandleVolStr, 64)
-	if err != nil {
-		panic(err)
-	}
+	lastCandleVol := candles[len(candles)-1].Volume
 
 	if lastCandleVol > avg*3 {
 		return "Strong Up"

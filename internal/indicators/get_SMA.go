@@ -1,21 +1,13 @@
-package logic
+package indicators
 
-import (
-	"strconv"
-)
+import "main/internal/signal_logic"
 
-func GetSMA(candles [][]string, count int) float64 {
+func GetSMA(candles []signal_logic.OHLCStruct, count int) float64 {
 	var total float64
 	last := candles[len(candles)-count:]
 
 	for _, c := range last {
-		closeStr := c[4]
-		closeVal, err := strconv.ParseFloat(closeStr, 64)
-		if err != nil {
-			return 0
-		}
-
-		total += closeVal
+		total += c.Close
 	}
 
 	return total / float64(count)
