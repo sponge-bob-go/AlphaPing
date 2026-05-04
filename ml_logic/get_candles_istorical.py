@@ -5,7 +5,7 @@ import json
 import os
 
 now = datetime.now()
-start_time = now - timedelta(days=365)
+start_time = now - timedelta(days=2190)
 
 GO_URL = "http://localhost:8080/ml-api/return_indicators"
 
@@ -26,9 +26,9 @@ async def post_to_go(session, payload):
         return await resp.json()
 
 
-def make_label(candles_100):
-    start_price = float(candles_100[60][4])
-    end_price = float(candles_100[-1][4])
+def make_label(candles_5):
+    start_price = float(candles_5[-1][4])
+    end_price = float(candles_5[0][4])
     return (end_price - start_price) / start_price
 
 
@@ -54,42 +54,43 @@ async def pipeline():
                 "https://api.bybit.com/v5/market/kline"
                 f"?category=linear&symbol={SYMBOL}&interval={interval}"
                 f"&start={convert_to_ts(day)}"
-                f"&end={convert_to_ts(day + timedelta(days=1))}"
-                "&limit=300"
+                f"&end={convert_to_ts(day + timedelta(days=3))}"
+                "&limit=304"
             )
 
-            urls = {
-                "1": base_url("1"),
-                "5": base_url("5"),
-                "15": base_url("15")
-            }
 
-            tasks = {k: asyncio.create_task(fetch(session, v)) for k, v in urls.items()}
-            results = await asyncio.gather(*tasks.values())
+            url15 = base_url("15")
 
-            data_1m = results[0]["result"]["list"]
+            result = await fetch(session=session, url=url15)
 
-            indicators = await post_to_go(session, {
-                "candles": data_1m
-            })
+            data_15m = result["result"]["list"]
+            
+            if len(data_15m) < 204:
+                day += timedelta(days=3)
+                day_index += 3
+                continue 
+            else:
+                indicators = await post_to_go(session, {
+                    "candles": data_15m[5:] 
+                })
+                print(len(data_15m))
+                last_5 = data_15m[:5]
 
-            last_100 = data_1m[:100]
+                label = make_label(last_5)
 
-            label = make_label(last_100)
+                dataset_item = {
+                    "symbol": SYMBOL,
+                    "time": str(day),
+                    "label_return": label,
+                    "indicators": indicators,
+                }
 
-            dataset_item = {
-                "symbol": SYMBOL,
-                "time": str(day),
-                "label_return": label,
-                "indicators": indicators,
-            }
+                save_file(SYMBOL, day_index, dataset_item)
 
-            save_file(SYMBOL, day_index, dataset_item)
+                print(f"Saved {SYMBOL} day_{day_index}")
 
-            print(f"Saved {SYMBOL} day_{day_index}")
-
-            day_index += 1
-            day += timedelta(days=1)
+                day_index += 3
+                day += timedelta(days=3)
 
 
 asyncio.run(pipeline())

@@ -38,6 +38,10 @@ func ParseOHLCFromRaw(list [][]string) ([]OHLCStruct, error) {
 		})
 	}
 
+	for i, j := 0, len(candles)-1; i < j; i, j = i+1, j-1 {
+		candles[i], candles[j] = candles[j], candles[i]
+	}
+
 	if len(candles) == 0 {
 		return nil, errors.New("no valid candles")
 	}

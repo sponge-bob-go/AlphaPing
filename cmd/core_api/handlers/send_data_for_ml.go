@@ -22,7 +22,6 @@ func OHLCHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-
 	if len(req.Candles) == 0 {
 		http.Error(w, "empty candles", 400)
 		return
